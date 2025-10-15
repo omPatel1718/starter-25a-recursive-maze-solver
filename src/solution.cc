@@ -1,7 +1,6 @@
 #include "solution.hpp"
-#include <iostream>
 
-// Recursive helper: explores the maze using backtracking
+// Recursive helper function that explores the maze using backtracking
 bool SolveMazeRecursive(
     const std::vector<std::vector<char>>& maze,
     unsigned int x,
@@ -9,23 +8,21 @@ bool SolveMazeRecursive(
     std::vector<std::pair<unsigned int, unsigned int>>& path,
     std::vector<std::vector<bool>>& visited) {
 
-  // Check bounds
+  // Check if current cell is out of bounds
   if (x >= maze.size() || y >= maze[0].size()) {
     return false;
   }
 
-  // Check for walls or previously visited cells
+  // Check if current cell is a wall or already visited
   if (maze[x][y] == '#' || visited[x][y]) {
     return false;
   }
 
-  // Mark current cell as visited
+  // Mark as visited and add to the current path
   visited[x][y] = true;
-
-  // Add current cell to the path
   path.push_back({x, y});
 
-  // Check if this cell is the exit
+  // Check for exit
   if (maze[x][y] == 'X') {
     return true;
   }
@@ -36,12 +33,12 @@ bool SolveMazeRecursive(
   if (SolveMazeRecursive(maze, x, y + 1, path, visited)) return true; // Right
   if (y > 0 && SolveMazeRecursive(maze, x, y - 1, path, visited)) return true; // Left
 
-  // Backtrack: remove current cell if no path found
+  // Backtrack: remove current cell if it leads to a dead end
   path.pop_back();
   return false;
 }
 
-// Sets up visited matrix and initiates recursion
+// Main function that initializes visited matrix and starts recursion
 std::vector<std::pair<unsigned int, unsigned int>> SolveMaze(
     const std::vector<std::vector<char>>& maze,
     unsigned int start_x,
@@ -49,16 +46,18 @@ std::vector<std::pair<unsigned int, unsigned int>> SolveMaze(
 
   std::vector<std::pair<unsigned int, unsigned int>> path;
 
+  // Edge case: empty maze
   if (maze.empty() || maze[0].empty()) {
-    return path; // Empty maze, nothing to solve
+    return path;
   }
 
-  // Create visited matrix initialized to false
+  // Initialize visited grid
   std::vector<std::vector<bool>> visited(
       maze.size(), std::vector<bool>(maze[0].size(), false));
 
-  // Start recursive search from the starting point
+  // Begin solving recursively
   SolveMazeRecursive(maze, start_x, start_y, path, visited);
 
   return path;
 }
+
